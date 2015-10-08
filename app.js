@@ -1,7 +1,7 @@
 ﻿var appServices = angular.module('myAppServices', ['ngResource']);
 var app = angular.module('myApp', [
 	'utilsService',
-  'ngRoute',
+  	'ngRoute',
 	'ngCookies',
 	'myAppServices',
 	'ngMaterial',
@@ -248,8 +248,14 @@ app.controller('MainPageCtrl', function($scope) {
     $scope.challnges = [{"ChallengedFullname":"Elad Avivi","Title":"Can you dance for an hour","Description":"Dancing for an whole hour in the streets of TLV","Prize":"50","Image":"https://33.media.tumblr.com/avatar_e2fbfbcbb52d_128.png","Fbid":123456,"Challengers":[{"Fullname":"Tom Kashti","Image":"https://33.media.tumblr.com/avatar_e2fbfbcbb52d_128.png"},{"Name":"Ram Mukmel","Image":"https://33.media.tumblr.com/avatar_e2fbfbcbb52d_128.png"},{"Name":"Moti Krisi","Image":"https://33.media.tumblr.com/avatar_e2fbfbcbb52d_128.png"}]},{"ChallengedFullname":"Yaniv Cohen","Title":"Stop Smoking for one month","Description":"You quit smoking starting TODAY","Prize":"300","Image":"http://www.frontieranimalsociety.com/images/Article_Images/11ec71f4b5adce762099c3c0e7d5489b.png","Fbid":654321,"Challengers":[{"Fullname":"Tom Kashti","Image":"https://33.media.tumblr.com/avatar_e2fbfbcbb52d_128.png"},{"Name":"Ram Mukmel","Image":"https://33.media.tumblr.com/avatar_e2fbfbcbb52d_128.png"}]}];
 });
 
-app.controller('ConfirmChallengeCtrl', function($scope) {
-
+app.controller('ConfirmChallengeCtrl', function($scope,$http) {
+	$http.get("/client_token").then(function(res)
+	{
+		console.log(res.data)	
+		braintree.setup(res.data, "dropin", {
+		  container: "payment-form"
+		});
+	});
 });
 
 app.controller('CheckoutCtrl', function($scope) {
