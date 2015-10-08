@@ -7,56 +7,32 @@
 <div ng-hide="profile.user.isConnected"  layout="column" layout-align="center center">
 	<br />
 	<br />
-
 	<div class="md-display-4">Please Login</div>
 </div>
 
 <div ng-hide="!profile.user.isConnected" layout="column" layout-align="center center">
 	<br />
 	<div style="width: 100%;">
-		<button class="md-raised md-primary md-button md-default-theme" ng-transclude="">
+		<button class="md-raised md-primary md-button md-default-theme">
 			<span class="ng-scope">Add New Challenge</span><div class="md-ripple-container"></div>
 		</button>
-		<md-list ng-cloak>
-			<md-subheader class="">Tasks list:</md-subheader>
-			<form ng-submit="currrentTasksList_newTaskSubmit()">
-				<md-input-container>
-					<label>Add new task:</label>
-					<input ng-model="currrentTasksList_newTaskCandidate" autofocus>
-				</md-input-container>
-			</form>
-			<md-list-item ng-repeat="task in currrentTasksList.getCurrentList().tasks">
-				<md-checkbox ng-model="task.isDone"></md-checkbox>
-				<p>{{task.title}}</p>
-				<md-icon ng-click="currrentTasksList.deleteTask($index)" class="md-secondary icon-cancel icon-1x" style="vertical-align: baseline;" ng-click="doSecondaryAction($event)" aria-label="Chat"></md-icon>
-			</md-list-item>
-			<md-divider></md-divider>
-		</md-list>
-
-		<br />
-		<br />
-
-		<md-list ng-cloak>
-			<md-subheader class="">Future Tasks list:</md-subheader>
-			<form ng-submit="futureTasksList_newTaskSubmit()">
-				<md-input-container>
-					<label>Add new task:</label>
-					<input ng-model="futureTasksList_newTaskCandidate">
-				</md-input-container>
-			</form>
-			<md-list-item ng-repeat="task in futureTasksList.getCurrentList().tasks">
-				<md-checkbox ng-model="task.isDone"></md-checkbox>
-				<p>{{task.title}}</p>
-				<div class="md-secondary-container">
-					<md-icon ng-click="futureTasksList.moveToList('current', $index)" class="icon2-upload2" style="vertical-align: baseline;" aria-label="Chat"></md-icon>
-					<md-icon ng-click="futureTasksList.deleteTask($index)" class="icon-cancel icon-1x" style="vertical-align: baseline;" aria-label="Chat"></md-icon>
-				</div>
-			</md-list-item>
-			<md-divider></md-divider>
-		</md-list>
-	</div>
-	<div>
-		<md-button ng-click="futureTasksList.save()">Save</md-button>
+	    <md-list>
+	      <md-subheader class="md-no-sticky">Your friends challenge list:</md-subheader>
+	      <md-list-item class="md-3-line" ng-repeat="item in challnges">
+	        <img ng-src="{{item.Image}}?{{$index}}" class="md-avatar" alt="{{item.ChallengedFullname}}" />
+	        <div class="md-list-item-text" layout="column">
+	          <h3>{{ item.ChallengedFullname }}</h3>
+	          <h4>{{ item.Title }}</h4>
+	          <p>{{ item.Description }}</p>
+	        </div>
+	        <button class="md-raised md-primary md-button md-default-theme" ng-hide="item.Fbid===myFbId">
+				<span class="ng-scope">Accpet Challenge</span><div class="md-ripple-container"></div>
+			</button>
+			<button class="md-raised md-button md-default-theme" ng-hide="item.Fbid!=myFbId">
+				<span class="ng-scope">Join Challenge</span><div class="md-ripple-container"></div>
+			</button>
+	      </md-list-item>
+	    </md-list>
 	</div>
 </div>
 
