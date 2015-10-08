@@ -12,15 +12,11 @@
 </div>
 
 <div ng-hide="!profile.user.isConnected" layout="column" layout-align="center center">
-	<div class="md-display-4">{{timer.getTimeFormated()}}</div>
-	<br/>
-	<div>
-		<md-button ng-click="timer.start()" ng-disabled="timer.status == app.countdownTimer.statuses.counting">Start</md-button>
-		<md-button ng-click="timer.stop()" ng-disabled="timer.status != app.countdownTimer.statuses.counting">Stop</md-button>
-		<md-button ng-click="timer.reset()">Reset</md-button>
-	</div>
 	<br />
 	<div style="width: 100%;">
+		<button class="md-raised md-primary md-button md-default-theme" ng-transclude="">
+			<span class="ng-scope">Add New Challenge</span><div class="md-ripple-container"></div>
+		</button>
 		<md-list ng-cloak>
 			<md-subheader class="">Tasks list:</md-subheader>
 			<form ng-submit="currrentTasksList_newTaskSubmit()">
