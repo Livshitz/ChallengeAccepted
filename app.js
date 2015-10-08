@@ -1,6 +1,5 @@
 ﻿var appServices = angular.module('myAppServices', ['ngResource']);
 var app = angular.module('myApp', [
-	'webapiServices',
 	'utilsService',
   'ngRoute',
 	'ngCookies',
@@ -34,12 +33,12 @@ app.config(function ($routeProvider, $sceDelegateProvider, $locationProvider) {
 	$locationProvider.html5Mode(false);
 });
 
-app.config(['$authProvider', 'webapiProvider', function ($authProvider, webapiProvider) {
-	var webapi = webapiProvider.$get();
-	console.log(webapi.getWebApiUrl() + 'mevtza/auth/facebook');
+app.config(['$authProvider', 'utilsProvider', function ($authProvider, utilsProvider) {
+	var webapi = utilsProvider.$get();
+	console.log(webapi.getWebApiUrl() + 'challengeaccepted/auth/facebook');
 
 	$authProvider.facebook({
-		clientId: '624547474274882'
+		clientId: '863214397051904' //'865206706852673' //'863214397051904'
 	});
 
 	$authProvider.google({
@@ -51,9 +50,9 @@ app.config(['$authProvider', 'webapiProvider', function ($authProvider, webapiPr
 	$authProvider.tokenRoot = null;
 	$authProvider.cordova = false;
 	$authProvider.baseUrl = '/';
-	$authProvider.loginUrl = webapi.getWebApiUrl() + 'mevtza/auth/login';
-	$authProvider.signupUrl = webapi.getWebApiUrl() + 'mevtza/auth/signup';
-	$authProvider.unlinkUrl = webapi.getWebApiUrl() + 'mevtza/auth/unlink/';
+	$authProvider.loginUrl = webapi.getWebApiUrl() + 'challengeaccepted/auth/login';
+	$authProvider.signupUrl = webapi.getWebApiUrl() + 'challengeaccepted/auth/signup';
+	$authProvider.unlinkUrl = webapi.getWebApiUrl() + 'challengeaccepted/auth/unlink/';
 	$authProvider.tokenName = 'token';
 	$authProvider.tokenPrefix = 'satellizer';
 	$authProvider.authHeader = 'Authorization';
@@ -62,7 +61,7 @@ app.config(['$authProvider', 'webapiProvider', function ($authProvider, webapiPr
 
 	// Facebook
 	$authProvider.facebook({
-		url: webapi.getWebApiUrl() + '/mevtza/auth/facebook',
+		url: webapi.getWebApiUrl() + '/challengeaccepted/auth/facebook',
 		authorizationEndpoint: 'https://www.facebook.com/v2.3/dialog/oauth',
 		redirectUri: (window.location.origin || window.location.protocol + '//' + window.location.host) + '/',
 		requ1iredUrlParams: ['display', 'scope'],
@@ -73,20 +72,6 @@ app.config(['$authProvider', 'webapiProvider', function ($authProvider, webapiPr
 		popupOptions: { width: 580, height: 400 }
 	});
 
-	// Google
-	$authProvider.google({
-		url: webapi.getWebApiUrl() + '/mevtza/auth/google',
-		authorizationEndpoint: 'https://accounts.google.com/o/oauth2/auth',
-		redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
-		requiredUrlParams: ['scope'],
-		optionalUrlParams: ['display'],
-		scope: ['profile', 'email'],
-		scopePrefix: 'openid',
-		scopeDelimiter: ' ',
-		display: 'popup',
-		type: '2.0',
-		popupOptions: { width: 452, height: 633 }
-	});
 }]);
 
 app.config(function ($mdThemingProvider) {
@@ -97,7 +82,7 @@ app.config(function ($mdThemingProvider) {
 
 /* --------------------- */
 
-app.run(function ($rootScope, $location, $auth, $http, webapi, $cookies, $window, utils, page, $mdDialog, $route) {
+app.run(function ($rootScope, $location, $auth, $http, $cookies, $window, utils, page, $mdDialog, $route) {
 	console.log('init');
 
 	$rootScope.app = app;
@@ -164,13 +149,10 @@ app.run(function ($rootScope, $location, $auth, $http, webapi, $cookies, $window
 			var success = function (res) {
 				console.log('login success.', res);
 
-				app.profile.user.userId = res.user.userId;
-				app.profile.user.email = res.user.email;
-				app.profile.user.fullName = res.user.fullName;
-				app.profile.user.firstName = res.user.firstName;
-				app.profile.user.lastName = res.user.lastName;
+				app.profile.user.userId = res.userId;
+				app.profile.user.email = res.email;
+				app.profile.user.fullName = res.fullName;
 				app.profile.user.isConnected = true;
-				app.profile.user.favoriteAds = res.user.favoriteAds;
 
 				app.profile.saveToCookie();
 
@@ -192,7 +174,7 @@ app.run(function ($rootScope, $location, $auth, $http, webapi, $cookies, $window
 
 			var ret = null;
 			if (provider == 'feedox') 
-				ret = $http.post(webapi.getWebApiUrl() + "/mevtza/login", loginData).then(success, failure);
+				ret = $http.post(utils.getWebApiUrl() + "/mevtza/login", loginData).then(success, failure);
 			else
 				ret = $auth.authenticate(provider).then(success, failure);
 
@@ -270,42 +252,20 @@ app.controller('loginCtrl', function ($scope, $mdDialog, $http, $route, $locatio
 		$mdDialog.cancel();
 	};
 	
-	$scope.submit = function() {
-		console.log('submit!');
+	$scope.loginWithFacebook = function () {
+		loginStarted();
+		app.profile.login('facebook').then(function () {
+			loginEnded();
+		});
+	};
 
-		if ($scope.isSignup) {
-			console.log('signup');
+	function loginStarted() {
+		$scope.isBusy = true;
+	};
 
-			if ($scope.myForm.password == undefined || $scope.myForm.password.trim() == '' || $scope.myForm.password != $scope.myForm.password2) {
-				utils.toastError('Passwords does not match!');
-				return false;
-			}
-		}
-
-		var action = $scope.isSignup ? 'signup' : 'signin';
-
-		$http.post(utils.getWebApiUrl() + "/countdown/" + action, { email: $scope.myForm.email, password: $scope.myForm.password })
-				.success(function (data, status, headers, config) {
-					data = JSON.parse(data);
-					console.log('signup: Success', data);
-
-					app.profile.user.email = data.email;
-					app.profile.user.userId = data._id;
-					app.profile.user.lastLogin = data.lastLogin;
-					app.profile.user.isConnected = true;
-
-					app.profile.saveToCookie();
-					app.profile.refresh();
-
-					utils.toastSuccess('Signed up successfully');
-					$route.reload();
-					$mdDialog.hide();
-			})
-				.error(function(data) {
-					utils.toastError('Failed to signup: ' + data);
-				}
-		);
-
+	function loginEnded() {
+		$scope.isBusy = false;
+		$scope.hide();
 	}
 
 });

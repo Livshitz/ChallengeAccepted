@@ -61,11 +61,11 @@
 		<div class="bg-grayLighter" style="">
 			<div class="fg-lightBlue" style="margin: 0 10px; " layout="row" layout-sm="column" layout-align="space-between center">
 
-				<div flex>&nbsp;
+				<div flex hide>&nbsp;
 					<a ng-click="utils.goBack()" ng-cloak ng-show="hasBack()" class="history-back cursor"><div class="icon-arrow-left-3 fg-black smaller" style="font-size: 2.8em;"></div></a>
 				</div>
 
-				<a flex class="fg-white" style="text-align: center;" ng-href="{{app.profile.user.isConnected ? '/#!/adRate' : '/#!/'}}">
+				<a  class="fg-white" style="text-align: center;" ng-href="{{app.profile.user.isConnected ? '/#!/adRate' : '/#!/'}}">
 					<div class="md-display-2 fg-black">Challenge Accepted</div>
 					<!--
 					<img src="./MevtzaIcon_Small.png" style="margin-top:0px; font-size: 4.8em;"/>
