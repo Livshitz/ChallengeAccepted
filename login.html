@@ -1,0 +1,42 @@
+﻿
+<div class="dialog-overlay op-dark md-padding" layout="row" layout-align="center center">
+	<md-dialog aria-label="Login" ng-cloak>
+		<form ng-submit="submit()">
+			
+
+			<md-dialog-content style="max-width: 800px; max-height: 810px;">
+
+				<md-checkbox ng-model="isSignup" aria-label="Signup">Signup?</md-checkbox>
+				<br />
+
+				<md-input-container md-no-float>
+					<input ng-model="myForm.email" name="email" type="email" placeholder="Email" ng-required="true" autofocus>
+				</md-input-container>
+				<md-input-container md-no-float>
+					<input ng-model="myForm.password" name="password" type="password" placeholder="Password">
+				</md-input-container>
+				<md-input-container md-no-float ng-show="isSignup">
+					<input ng-model="myForm.password2" name="password2" type="password" placeholder="Confirm Password">
+				</md-input-container>
+
+			</md-dialog-content>
+
+			<div class="md-actions" layout="row">
+				<span flex></span>
+				<md-button ng-click="login()" class="md-raised md-primary">Go</md-button>
+			</div>
+
+			<md-toolbar>
+				<div class="md-toolbar-tools">
+					<h2>{{ !isSignup ? 'Signin' : 'Signup' }}</h2>
+					<span flex></span>
+					<md-button class="md-icon-button" style="background-color: rgb(33, 150, 243);" ng-click="cancel()">
+						<div class="fg-white icon-cancel-2 icon-1x" aria-label="Close dialog"></div>
+					</md-button>
+				</div>
+			</md-toolbar>
+		</form>
+	</md-dialog>
+
+
+</div>
